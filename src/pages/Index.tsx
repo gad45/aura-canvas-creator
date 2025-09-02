@@ -3,30 +3,66 @@ import { useEffect, useState } from 'react';
 const Index = () => {
   const [activityVisible, setActivityVisible] = useState(false);
 
-  // Counter animation hook
+  // Scroll animations with IntersectionObserver
   useEffect(() => {
-    const counters = document.querySelectorAll('.counter');
-    counters.forEach(counter => {
-      const target = parseFloat(counter.getAttribute('data-target') || '0');
-      const suffix = counter.getAttribute('data-suffix') || '';
-      const decimals = parseInt(counter.getAttribute('data-decimals') || '0');
+    const scrollElements = document.querySelectorAll('.scroll-animate');
+    const scrollObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    scrollElements.forEach(el => scrollObserver.observe(el));
+
+    return () => {
+      scrollElements.forEach(el => scrollObserver.unobserve(el));
+    };
+  }, []);
+
+  // Counter animation hook with intersection observer
+  useEffect(() => {
+    const animateCounter = (element) => {
+      const target = parseFloat(element.dataset.target || '0');
+      const suffix = element.dataset.suffix || '';
+      const decimals = parseInt(element.dataset.decimals) || 0;
       const duration = 2000;
       const step = target / (duration / 16);
       let current = 0;
 
-      const updateCounter = () => {
+      const timer = setInterval(() => {
         current += step;
-        if (current < target) {
-          counter.textContent = current.toFixed(decimals) + suffix;
-          requestAnimationFrame(updateCounter);
-        } else {
-          counter.textContent = target.toFixed(decimals) + suffix;
+        if (current >= target) {
+          current = target;
+          clearInterval(timer);
         }
-      };
+        
+        if (decimals > 0) {
+          element.textContent = current.toFixed(decimals) + suffix;
+        } else {
+          element.textContent = Math.floor(current).toLocaleString() + suffix;
+        }
+      }, 16);
+    };
 
-      // Start animation after a delay
-      setTimeout(updateCounter, 1000);
-    });
+    const statsContainer = document.getElementById('statsContainer');
+    if (statsContainer) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const counters = entry.target.querySelectorAll('.counter');
+            counters.forEach(counter => {
+              setTimeout(() => animateCounter(counter), 500);
+            });
+            observer.unobserve(entry.target);
+          }
+        });
+      });
+      observer.observe(statsContainer);
+
+      return () => observer.disconnect();
+    }
   }, []);
 
   return (
@@ -825,79 +861,6 @@ const Index = () => {
         </div>
       </footer>
 
-      {/* JavaScript for interactivity */}
-      <script dangerouslySetInnerHTML={{__html: `
-      // Animated counters
-      function animateCounter(element) {
-        const target = parseInt(element.dataset.target);
-        const suffix = element.dataset.suffix || '';
-        const decimals = parseInt(element.dataset.decimals) || 0;
-        const duration = 2000;
-        const step = target / (duration / 16);
-        let current = 0;
-
-        const timer = setInterval(() => {
-          current += step;
-          if (current >= target) {
-            current = target;
-            clearInterval(timer);
-          }
-          
-          if (decimals > 0) {
-            element.textContent = current.toFixed(decimals) + suffix;
-          } else {
-            element.textContent = Math.floor(current).toLocaleString() + suffix;
-          }
-        }, 16);
-      }
-
-      // Initialize counters when stats container is visible
-      const statsContainer = document.getElementById('statsContainer');
-      if (statsContainer) {
-        const observer = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const counters = entry.target.querySelectorAll('.counter');
-              counters.forEach(counter => {
-                setTimeout(() => animateCounter(counter), 500);
-              });
-              observer.unobserve(entry.target);
-            }
-          });
-        });
-        observer.observe(statsContainer);
-      }
-
-      // Activity panel toggle
-      const activityToggle = document.getElementById('activityToggle');
-      const activityList = document.getElementById('activityList');
-      const activityFooter = document.getElementById('activityFooter');
-
-      if (activityToggle && activityList && activityFooter) {
-        activityToggle.addEventListener('click', () => {
-          const isHidden = activityList.classList.contains('hidden');
-          if (isHidden) {
-            activityList.classList.remove('hidden');
-            activityFooter.classList.remove('hidden');
-          } else {
-            activityList.classList.add('hidden');
-            activityFooter.classList.add('hidden');
-          }
-        });
-      }
-
-      // Scroll animations
-      const scrollElements = document.querySelectorAll('.scroll-animate');
-      const scrollObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in-view');
-          }
-        });
-      }, { threshold: 0.1 });
-
-      scrollElements.forEach(el => scrollObserver.observe(el));
-      `}} />
     </div>
   );
 };

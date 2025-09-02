@@ -63,6 +63,27 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				}
 			},
+			fontFamily: {
+				'display': ['SF Pro Display', 'Geist', 'Inter', 'ui-sans-serif', 'system-ui'],
+				'text': ['SF Pro Text', 'Geist', 'Inter', 'ui-sans-serif', 'system-ui'],
+				'geist': ['Geist', 'sans-serif'],
+				'roboto': ['Roboto', 'sans-serif'],
+				'montserrat': ['Montserrat', 'sans-serif'],
+				'poppins': ['Poppins', 'sans-serif'],
+				'playfair': ['Playfair Display', 'serif'],
+				'instrument-serif': ['Instrument Serif', 'serif'],
+				'merriweather': ['Merriweather', 'serif'],
+				'bricolage': ['Bricolage Grotesque', 'sans-serif'],
+				'jakarta': ['Plus Jakarta Sans', 'sans-serif'],
+				'manrope': ['Manrope', 'sans-serif'],
+				'space-grotesk': ['Space Grotesk', 'sans-serif'],
+				'work-sans': ['Work Sans', 'sans-serif'],
+				'pt-serif': ['PT Serif', 'serif'],
+				'geist-mono': ['Geist Mono', 'monospace'],
+				'space-mono': ['Space Mono', 'monospace'],
+				'quicksand': ['Quicksand', 'sans-serif'],
+				'nunito': ['Nunito', 'sans-serif']
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
@@ -84,11 +105,40 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				fadeIn: {
+					from: { opacity: '0' },
+					to: { opacity: '1' }
+				},
+				slideUp: {
+					from: { opacity: '0', transform: 'translateY(30px)' },
+					to: { opacity: '1', transform: 'translateY(0)' }
+				},
+				slideLeft: {
+					from: { opacity: '0', transform: 'translateX(20px)' },
+					to: { opacity: '1', transform: 'translateX(0)' }
+				},
+				blurIn: {
+					from: { opacity: '0', filter: 'blur(10px)' },
+					to: { opacity: '1', filter: 'blur(0)' }
+				},
+				rotate: {
+					to: { transform: 'translate(-50%, -50%) rotate(360deg)' }
+				},
+				'glow-float': {
+					'0%, 100%': { transform: 'translate(-50%, -50%) scale(1)', opacity: '0.8' },
+					'50%': { transform: 'translate(-50%, -50%) scale(1.2)', opacity: '1' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fadeIn 0.8s ease-out forwards',
+				'slide-up': 'slideUp 0.8s ease-out forwards',
+				'slide-left': 'slideLeft 0.8s ease-out forwards',
+				'blur-in': 'blurIn 1s ease-out forwards',
+				'rotate': 'rotate 20s linear infinite',
+				'glow-float': 'glow-float 4s ease-in-out infinite'
 			}
 		}
 	},

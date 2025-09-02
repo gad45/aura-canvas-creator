@@ -101,8 +101,8 @@ const Index = () => {
   return (
     <div className="h-full bg-black text-white antialiased font-text overflow-x-hidden">
       {/* UnicornStudio Background */}
-      <div className="aura-background-component fixed top-0 w-full h-screen -z-10">
-        <div data-us-project="krvLrHX3sj3cg8BHywDj" className="absolute top-0 left-0 -z-10 w-full h-full"></div>
+      <div className="aura-background-component fixed top-0 w-full h-screen z-0">
+        <div data-us-project="krvLrHX3sj3cg8BHywDj" className="absolute top-0 left-0 z-0 w-full h-full"></div>
       </div>
 
       {/* Enhanced background with Apple-like gradients */}

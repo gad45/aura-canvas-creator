@@ -1,5 +1,15 @@
 import { useEffect, useState } from 'react';
 
+// Extend Window interface for UnicornStudio
+declare global {
+  interface Window {
+    UnicornStudio?: {
+      isInitialized: boolean;
+      init?: () => void;
+    };
+  }
+}
+
 const Index = () => {
   const [activityVisible, setActivityVisible] = useState(false);
 
@@ -19,6 +29,29 @@ const Index = () => {
     return () => {
       scrollElements.forEach(el => scrollObserver.unobserve(el));
     };
+  }, []);
+
+  // UnicornStudio background integration
+  useEffect(() => {
+    const loadUnicornStudio = () => {
+      if (!window.UnicornStudio) {
+        window.UnicornStudio = { isInitialized: false };
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js';
+        script.onload = () => {
+          if (!window.UnicornStudio.isInitialized) {
+            window.UnicornStudio.init();
+            window.UnicornStudio.isInitialized = true;
+          }
+        };
+        document.head.appendChild(script);
+      } else if (!window.UnicornStudio.isInitialized) {
+        window.UnicornStudio.init();
+        window.UnicornStudio.isInitialized = true;
+      }
+    };
+
+    loadUnicornStudio();
   }, []);
 
   // Counter animation hook with intersection observer
@@ -70,19 +103,23 @@ const Index = () => {
       {/* UnicornStudio Background */}
       <div className="aura-background-component fixed top-0 w-full h-screen -z-10">
         <div data-us-project="krvLrHX3sj3cg8BHywDj" className="absolute top-0 left-0 -z-10 w-full h-full"></div>
-        <script type="text/javascript" dangerouslySetInnerHTML={{
-          __html: `
-            !function(){if(!window.UnicornStudio){window.UnicornStudio={isInitialized:!1};var i=document.createElement("script");i.src="https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.4.29/dist/unicornStudio.umd.js",i.onload=function(){window.UnicornStudio.isInitialized||(UnicornStudio.init(),window.UnicornStudio.isInitialized=!0)},(document.head || document.body).appendChild(i)}}();
-          `
-        }} />
       </div>
 
       {/* Enhanced background with Apple-like gradients */}
       <div className="pointer-events-none fixed inset-0 -z-20">
-        <div className="absolute -top-32 -left-32 h-[640px] w-[640px] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,122,255,0.15),transparent_70%)] blur-3xl"></div>
-        <div className="absolute top-1/3 -right-32 h-[540px] w-[540px] rounded-full bg-[radial-gradient(circle_at_center,rgba(175,82,222,0.12),transparent_70%)] blur-3xl"></div>
-        <div className="absolute -bottom-32 left-1/4 h-[580px] w-[580px] rounded-full bg-[radial-gradient(circle_at_center,rgba(52,199,89,0.08),transparent_70%)] blur-3xl"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(1400px_600px_at_50%_0%,rgba(0,122,255,0.08),transparent),radial-gradient(1200px_500px_at_80%_100%,rgba(175,82,222,0.06),transparent)]"></div>
+        {/* Animated glow light effect */}
+        <div className="glow-light"></div>
+        
+        {/* Enhanced gradient orbs with higher opacity */}
+        <div className="absolute -top-32 -left-32 h-[640px] w-[640px] rounded-full bg-[radial-gradient(circle_at_center,rgba(0,122,255,0.25),transparent_70%)] blur-3xl animate-[glow-float_6s_ease-in-out_infinite]"></div>
+        <div className="absolute top-1/3 -right-32 h-[540px] w-[540px] rounded-full bg-[radial-gradient(circle_at_center,rgba(175,82,222,0.22),transparent_70%)] blur-3xl animate-[glow-float_8s_ease-in-out_infinite_reverse]"></div>
+        <div className="absolute -bottom-32 left-1/4 h-[580px] w-[580px] rounded-full bg-[radial-gradient(circle_at_center,rgba(52,199,89,0.18),transparent_70%)] blur-3xl animate-[glow-float_7s_ease-in-out_infinite_1s]"></div>
+        
+        {/* Base gradient layer with fallback */}
+        <div className="absolute inset-0 bg-[radial-gradient(1400px_600px_at_50%_0%,rgba(0,122,255,0.15),transparent),radial-gradient(1200px_500px_at_80%_100%,rgba(175,82,222,0.12),transparent)]"></div>
+        
+        {/* Fallback gradient background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-purple-500/5"></div>
       </div>
 
       {/* Header */}
